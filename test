@@ -1,0 +1,31 @@
+import requests
+from bs4 import BeautifulSoup
+
+# URL to scrape
+url = "https://irancode.ir/Search/ProductECatalogue?ID_NationalCode=3862998"
+
+# Send a GET request to the URL and get the page content
+response = requests.get(url)
+soup = BeautifulSoup(response.content, "html.parser")
+
+# Find the table within the div with id 'eCatalogueTab-2'
+e_catalogue_tab_table = soup.find("div", id="eCatalogueTab-2").find("table")
+
+# Check if the table was found before proceeding
+if e_catalogue_tab_table is not None:
+    # Initialize an empty array to store the result
+    result_array = []
+
+    # Find all tr elements (rows) within the table
+    tr_elements = e_catalogue_tab_table.find_all("tr")
+
+    # Process the text within the tr elements and construct the result array
+    for tr in tr_elements:
+        td_elements = tr.find_all("td") #td , th
+        row_data = [td.get_text(strip=True) for td in td_elements]
+        result_array.append(row_data)
+        
+    print(result_array)
+    # Print the result array
+else:
+    print("The 'eCatalogueTab-2' table was not found on the webpage.")
